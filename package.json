@@ -1,0 +1,19 @@
+{
+  "name": "automation-exercise-playwright",
+  "version": "1.0.0",
+  "description": "Playwright tests for Automation Exercise with Allure reporting",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:parallel": "npx playwright test --workers=4",
+    "allure:generate": "npx allure generate allure-results --clean -o allure-report",
+    "allure:open": "npx allure open allure-report",
+    "allure:clear": "if exist allure-results rmdir /s /q allure-results && if exist allure-report rmdir /s /q allure-report",
+    "run:until-pass": "node scripts/run-until-pass.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "allure-commandline": "^2.24.0",
+    "allure-playwright": "^2.9.0"
+  }
+}
