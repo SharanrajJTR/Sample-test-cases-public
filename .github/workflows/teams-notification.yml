@@ -1,0 +1,68 @@
+name: Teams Notification On Push
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  notify-teams:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Microsoft Teams notification
+        run: |
+          curl -H "Content-Type: application/json" \
+          -d '{
+            "type": "message",
+            "attachments": [
+              {
+                "contentType": "application/vnd.microsoft.card.adaptive",
+                "content": {
+                  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+                  "type": "AdaptiveCard",
+                  "version": "1.4",
+                  "body": [
+                    {
+                      "type": "TextBlock",
+                      "text": "GitHub Push Notification",
+                      "weight": "Bolder",
+                      "size": "Large"
+                    },
+                    {
+                      "type": "TextBlock",
+                      "text": "Code was pushed to the repository.",
+                      "wrap": true
+                    },
+                    {
+                      "type": "FactSet",
+                      "facts": [
+                        {
+                          "title": "Repository:",
+                          "value": "${{ github.repository }}"
+                        },
+                        {
+                          "title": "Pushed by:",
+                          "value": "${{ github.actor }}"
+                        },
+                        {
+                          "title": "Branch:",
+                          "value": "${{ github.ref_name }}"
+                        },
+                        {
+                          "title": "Commit SHA:",
+                          "value": "${{ github.sha }}"
+                        },
+                        {
+                          "title": "Commit message:",
+                          "value": "${{ github.event.head_commit.message }}"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }' \
+          "${{ secrets.TEAMS_WEBHOOK_URL }}"
